@@ -65,7 +65,9 @@ class SinglyLinkedList :
         while next_node is not None:
             print(next_node.values)
             next_node = next_node.address
-            
+
+class DoublyLinkedList :
+    pass
 
 if __name__ == "__main__" :
     head = Node(1)
