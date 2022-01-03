@@ -2,7 +2,7 @@ import hashlib
 
 class HashTable : 
     def __init__(self, lens) -> None:
-        self.hash_table = [None for _ in range(lens)]
+        self.hash_table = [[None] for _ in range(lens)]
         self.lens = lens
 
     def hashing(self, key) :
@@ -18,12 +18,38 @@ class HashTable :
         hash_hex = self.hashing(key)
         key = self.create_key(hash_hex)
 
-        if self.hash_table[key] is not None :
-            for for_index, for_values in enumerate(self.hash_table[key]) :
-                pass
+        if self.hash_table[key][0] is not None :
+            for _, for_values in enumerate(self.hash_table[key]) :
+                if for_values[0] == hash_hex:
+                    for_values[1] = values
+                    return 0
+
+                else :
+                    continue
+
+            self.hash_table[key].append([hash_hex, values])
 
         else :
-            self.hash_table[key] = [hash_hex, values]
+            self.hash_table[key] = [[hash_hex, values]]
 
-hash_table = HashTable(16)
-hash_table.insert("asd", 123)
+    def print(self, key) :
+        hash_hex = self.hashing(key)
+        key = self.create_key(hash_hex)
+
+        if self.hash_table[key][0] is None :
+            return 1
+
+        elif self.hash_table[key][0][0] == hash_hex :
+            return self.hash_table[key][0][1]
+
+        else :
+            for _, for_values in enumerate(self.hash_table[key]) :
+                if for_values[0] == hash_hex:
+                    return for_values[1]
+
+hash_table = HashTable(2)
+hash_table.insert("da", 123)
+hash_table.insert("dh", 123)
+hash_table.insert("dh", 456)
+print(hash_table.print("dh"))
+print(hash_table.print("da"))
