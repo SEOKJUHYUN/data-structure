@@ -1,34 +1,63 @@
+""" 랜덤한 숫자를 이용하여 이진 탐색 트리를 테스트한다."""
+import random
+
 class Node :
-    def __init__(self, values) -> None:
+    """Node를 생성하는 Class"""
+    def __init__(self, values: int) -> None:
         self.values = values
         self.left = None
         self.right = None
 
 class Tree :
-    def __init__(self, root_node : object) -> None:
+    """이진 탐색 트리이다.
+    트리에 Node를 추가하는 insert와 값이 있는지 확인하는 search와 Node를 삭제하는 delete 메소드를 구성되어있다.
+    """
+    def __init__(self, root_node: object) -> None :
         self.root_node = root_node
 
-    def insert(self, values) :
-        new_node = Node(values)
+    def insert(self, values: int) -> bool :
+        """이진 탐색 트리에 원하는 노드를 추가하는 메소드이다.
 
+        Args:
+            values (int): [이진 탐색 트리에 추가할 숫자.]
+
+        Returns:
+            bool: [성공 여부를 리턴한다.]
+        """
+        new_node = Node(values)
         now_node = self.root_node
+        result: bool = False
 
         while True :
             if new_node.values < now_node.values :
                 if now_node.left is None :
                     now_node.left = new_node
-                    break
+                    result = True
+                    return result
+
                 else :
                     now_node = now_node.left
 
             elif new_node.values > now_node.values :
                 if now_node.right is None :
                     now_node.right = new_node
-                    break
+                    result = True
+                    return result
                 else :
                     now_node = now_node.right
 
-    def search(self, values) :
+            else :
+                return result
+
+    def search(self, values: int) -> bool :
+        """이진 탐색 트리에 사용자가 원하는 값이 이진 탐색 트리에 있는지 확인해주는 메소드이다.
+
+        Args:
+            values (int): [이진 탐색 트리에서 확인할 숫자.]
+
+        Returns:
+            bool: [성공 여부를 리턴한다.]
+        """
         now_node = self.root_node
         result: bool = False
 
@@ -46,7 +75,15 @@ class Tree :
         return result
 
 
-    def delete(self, values) :
+    def delete(self, values: int) -> bool :
+        """이진 탐색 트리에서 노드를 삭제하는 메소드이다.
+
+        Args:
+            values (int): [이진 탐색 트레에서 삭제할 숫자.]
+
+        Returns:
+            bool: [성공 여부를 리턴한다.]
+        """
         now_node = self.root_node
         parent_node = self.root_node
         result: bool = False
@@ -64,58 +101,63 @@ class Tree :
             else :
                 parent_node = now_node
                 now_node = now_node.right
-            
+
 
         while now_node is not None :
-            if values == now_node.values :
-                if now_node.right is None and now_node.left is None :
-                    if now_node.values < parent_node.values  :
-                        parent_node.left = None
-                    else :
-                        parent_node.right = None
-                    del now_node
-                    result = True
-                    return result
+            if now_node.right is None and now_node.left is None :
+                if now_node.values < parent_node.values  :
+                    parent_node.left = None
+                else :
+                    parent_node.right = None
+                del now_node
+                result = True
+                return result
 
-                elif now_node.right is not None and now_node.left is None :
-                        if now_node.values < parent_node.values  :
-                            parent_node.left = now_node.right
-                        else :
-                            parent_node.right = now_node.right
-                        del now_node
-                        result = True
-                        return result
+            elif now_node.right is not None and now_node.left is None :
+                if now_node.values < parent_node.values  :
+                    parent_node.left = now_node.right
+                else :
+                    parent_node.right = now_node.right
+                del now_node
+                result = True
+                return result
 
-                elif now_node.right is None and now_node.left is not None :
-                    if  parent_node.values < now_node.values :
-                        parent_node.left = now_node.left
-                    else :
-                        parent_node.right = now_node.left
-                    del now_node
-                    result = True
-                    return result
+            elif now_node.right is None and now_node.left is not None :
+                if  parent_node.values < now_node.values :
+                    parent_node.left = now_node.left
+                else :
+                    parent_node.right = now_node.left
+                del now_node
+                result = True
+                return result
 
-                elif now_node.right is not None and now_node.left is not None :
-                        left_node = now_node.right
-                        while left_node.left is not None :
-                            left_parent_node = left_node
-                            left_node = left_node.left
+            elif now_node.right is not None and now_node.left is not None :
+                left_node = now_node.right
 
-                        if left_node.right is not None :
-                            left_parent_node.left = left_node.right
+                if left_node.left is None :
+                    left_node.left = now_node.left
 
-                        left_node.left = now_node.left
-                        left_node.right = now_node.right
+                else :
+                    while left_node.left is not None :
+                        left_parent_node = left_node
+                        left_node = left_node.left
 
-                        if now_node.values < parent_node.values :
-                            parent_node.left = left_node
-                        else :
-                            parent_node.right = left_node
+                    if left_node.right is not None :
+                        left_parent_node.left = left_node.right
 
-                        del now_node
-                        result = True
-                        return result
-                    
+                    left_node.left = now_node.left
+                    left_node.right = now_node.right
+
+                if now_node.values < parent_node.values :
+                    parent_node.left = left_node
+
+                else :
+                    parent_node.right = left_node
+
+                del now_node
+                result = True
+                return result
+
             else :
                 return result
 
@@ -123,8 +165,6 @@ class Tree :
 
 
 if __name__ == "__main__" :
-    import random
-
     # 0 ~ 999 중, 100 개의 숫자 랜덤 선택
     bst_nums = set()
     while len(bst_nums) != 100:
@@ -139,10 +179,10 @@ if __name__ == "__main__" :
 
     # 입력한 100개의 숫자 검색 (검색 기능 확인)
     for num in bst_nums:
-        if tree.search(num) == False:
-            print ('search failed', num)
+        if tree.search(num) is False:
+            print('failed :', num, end=" ")
         else :
-            print ('search success', num, end=" ")
+            print('success :', num)
 
     # 입력한 100개의 숫자 중 10개의 숫자를 랜덤 선택
     delete_nums = set()
@@ -152,7 +192,7 @@ if __name__ == "__main__" :
 
     # 선택한 10개의 숫자를 삭제 (삭제 기능 확인)
     for del_num in delete_nums:
-        if tree.delete(del_num) == False:
-            print('delete failed', del_num)
+        if tree.delete(del_num) is False:
+            print('failed :', del_num, end=" ")
         else :
-            print ('search success', del_num)
+            print('success :', del_num, end=" ")
